@@ -28,8 +28,8 @@ class BoardUI extends JFrame{
         this.setVisible(true);
     }
 
-    void drawGo(int[][] goState){
-        BoardPanel boardPanel = new BoardPanel();
+    void drawGo(int[][] goState, GameController controller){
+        boardPanel = new BoardPanel(controller);
         boardPanel.prepareBoard(goState.length);
         this.setSize(boardPanel.getCanvasSize()+50, boardPanel.getCanvasSize()+80);
         this.add(boardPanel);

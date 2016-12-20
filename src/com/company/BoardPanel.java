@@ -20,7 +20,10 @@ class BoardPanel extends JPanel{
 
     private JButton[][] cells;
 
-    BoardPanel(){
+    private GameController controller;
+
+    BoardPanel(GameController controller){
+        this.controller = controller;
         this.setVisible(false);
     }
 
@@ -79,7 +82,7 @@ class BoardPanel extends JPanel{
 
     private void putStone(int i, int j){
         cells[i][j].setBackground(cellColor);
-        cells[i][j].setText("1");
+        cells[i][j].setText(String.valueOf(controller.getCurrentPlayer()));
         revalidate();
         repaint();
     }

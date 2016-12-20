@@ -7,6 +7,7 @@ public class GameController {
 
     private int currentPlayer;
     private int[][] boardState;
+    private BoardUI boardUI;
 
     GameController(){
         newGame();
@@ -44,8 +45,9 @@ public class GameController {
     }
 
     private void displayBoard(){
-        BoardUI boardUI = new BoardUI();
-        boardUI.drawGo(boardState);
+        boardUI = new BoardUI();
+        boardUI.drawGo(boardState, this);
+        setTurn(2);
     }
 
 }
