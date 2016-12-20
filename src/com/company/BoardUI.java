@@ -9,6 +9,7 @@ import java.awt.*;
 class BoardUI extends JFrame{
 
     private BoardPanel boardPanel;
+    private ControlPanel controlPanel;
 
     BoardUI(){
         prepareGUI();
@@ -25,15 +26,23 @@ class BoardUI extends JFrame{
         this.setLocationRelativeTo(null);
         this.setLayout(null);
         this.setTitle("Go");
+        setupControlPanel();
         this.setVisible(true);
+    }
+
+    void setupControlPanel(){
+        controlPanel = new ControlPanel();
+        controlPanel.setBounds(0,0, 220,600);
+        this.add(controlPanel);
+        controlPanel.setVisible(true);
     }
 
     void drawGo(int[][] goState, GameController controller){
         boardPanel = new BoardPanel(controller);
         boardPanel.prepareBoard(goState.length);
-        this.setSize(boardPanel.getCanvasSize()+50, boardPanel.getCanvasSize()+80);
+        this.setSize(boardPanel.getCanvasSize()+270, boardPanel.getCanvasSize()+80);
         this.add(boardPanel);
-        boardPanel.setBounds(20, 20, boardPanel.getCanvasSize(), boardPanel.getCanvasSize());
+        boardPanel.setBounds(240, 20, boardPanel.getCanvasSize(), boardPanel.getCanvasSize());
         boardPanel.setVisible(true);
         boardPanel.drawGo(goState);
         boardPanel.revalidate();
