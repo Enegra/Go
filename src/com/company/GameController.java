@@ -47,7 +47,16 @@ public class GameController {
     private void displayBoard(){
         boardUI = new BoardUI();
         boardUI.drawGo(boardState, this);
-        setTurn(2);
+        setTurn(1);
+    }
+
+    void switchTurn(){
+        if (currentPlayer==1){
+            currentPlayer = 2;
+        }
+        else {
+            currentPlayer = 1;
+        }
     }
 
 }

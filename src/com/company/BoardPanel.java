@@ -56,11 +56,8 @@ class BoardPanel extends JPanel{
                 cells[i][j].addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (cells[a][b].getText()==""){
+                        if (allowed(a,b)){
                             putStone(a,b);
-                        }
-                        else {
-                            takeStone(a,b);
                         }
                     }
                 });
@@ -83,6 +80,7 @@ class BoardPanel extends JPanel{
     private void putStone(int i, int j){
         cells[i][j].setBackground(cellColor);
         cells[i][j].setText(String.valueOf(controller.getCurrentPlayer()));
+        controller.switchTurn();
         revalidate();
         repaint();
     }
@@ -92,6 +90,10 @@ class BoardPanel extends JPanel{
         cells[i][j].setText("");
         revalidate();
         repaint();
+    }
+
+    private boolean allowed(int i, int j){
+        return cells[i][j].getText()=="";
     }
 
 }
