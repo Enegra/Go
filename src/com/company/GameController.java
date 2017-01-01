@@ -1,13 +1,16 @@
 package com.company;
 
+import java.util.ArrayList;
+
 /**
  * Created by agnie on 12/18/2016.
  */
 public class GameController {
 
     private int currentPlayer;
-    private int[][] boardState;
     private BoardUI boardUI;
+    private ArrayList<GameState> gameFlow;
+    private GameState gameState;
 
     GameController(){
         newGame();
@@ -15,25 +18,9 @@ public class GameController {
     }
 
     private void newGame(){
-        boardState = new int[][]{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+        gameFlow = new ArrayList<GameState>();
+        gameState = new GameState();
+        gameFlow.add(new GameState(gameState));
     }
 
     void setTurn(int currentPlayer){
@@ -46,7 +33,7 @@ public class GameController {
 
     private void displayBoard(){
         boardUI = new BoardUI();
-        boardUI.drawGo(boardState, this);
+        boardUI.drawGo(gameState.getBoardState(), this);
         setTurn(1);
     }
 
@@ -57,6 +44,26 @@ public class GameController {
         else {
             currentPlayer = 1;
         }
+        gameFlow.add(new GameState(gameState));
+    }
+
+    boolean moveAllowed(int i, int j){
+        //// TODO: 1/1/2017
+        return false;
+    }
+
+    void putStone(int i, int j){
+        gameState.getBoardState()[i][j]=currentPlayer;
+    }
+
+    void takeStone(int i, int j){
+        if (gameState.getBoardState()[i][j]==1){
+            gameState.setDeadBlackStones(gameState.getDeadBlackStones()+1);
+        }
+        else if (gameState.getBoardState()[i][j]==2){
+            gameState.setDeadWhiteStones(gameState.getDeadWhiteStones()+1);
+        }
+        gameState.getBoardState()[i][j]=0;
     }
 
 }

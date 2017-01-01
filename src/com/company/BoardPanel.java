@@ -57,6 +57,7 @@ class BoardPanel extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (allowed(a,b)){
+                            controller.putStone(a,b);
                             putStone(a,b);
                         }
                     }
