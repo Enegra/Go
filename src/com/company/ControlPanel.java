@@ -8,7 +8,7 @@ import java.awt.*;
  */
 public class ControlPanel extends JPanel{
 
-    private JLabel gameTypeChoiceLabel, heuristicChoiceLabel;
+    private JLabel gameTypeChoiceLabel, heuristicChoiceLabel, turnLabel;
     private JComboBox gameTypeChoiceComboBox, heuristicChoiceComboBox;
     private JButton startGameButton, pauseGameButton, skipGameButton;
 
@@ -27,6 +27,7 @@ public class ControlPanel extends JPanel{
         setupStartGameButton();
         setupPauseGameButton();
         setupSkipGameButton();
+        setupTurnLabel();
     }
 
     private void setupGameTypeChoiceLabel(){
@@ -78,6 +79,17 @@ public class ControlPanel extends JPanel{
         skipGameButton.setPreferredSize(new Dimension(200,30));
         this.add(skipGameButton);
         skipGameButton.setVisible(true);
+    }
+
+    private void setupTurnLabel(){
+        turnLabel = new JLabel("Current turn: ");
+        turnLabel.setPreferredSize(new Dimension(200,60));
+        this.add(turnLabel);
+        turnLabel.setVisible(false);
+    }
+
+    JLabel getTurnLabel(){
+        return turnLabel;
     }
 
 }

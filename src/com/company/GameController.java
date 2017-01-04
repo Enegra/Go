@@ -32,18 +32,21 @@ public class GameController {
     }
 
     private void displayBoard(){
+        setTurn(0);
         boardUI = new BoardUI();
+        boardUI.getControlPanel().getTurnLabel().setVisible(true);
+        boardUI.getControlPanel().getTurnLabel().setText("Current turn: " + currentPlayer);
         boardUI.drawGo(gameState.getBoardState(), this);
-        setTurn(1);
     }
 
     void switchTurn(){
-        if (currentPlayer==1){
-            currentPlayer = 2;
-        }
-        else {
+        if (currentPlayer==0){
             currentPlayer = 1;
         }
+        else {
+            currentPlayer = 0;
+        }
+        boardUI.getControlPanel().getTurnLabel().setText("Current turn: " + currentPlayer);
         gameFlow.add(new GameState(gameState));
     }
 
@@ -53,17 +56,17 @@ public class GameController {
     }
 
     void putStone(int i, int j){
-        gameState.getBoardState()[i][j]=currentPlayer;
+        gameState.getBoardState()[i][j]=new Stone(currentPlayer);
     }
 
     void takeStone(int i, int j){
-        if (gameState.getBoardState()[i][j]==1){
+        if (gameState.getBoardState()[i][j].getColor()==1){
             gameState.setDeadBlackStones(gameState.getDeadBlackStones()+1);
         }
-        else if (gameState.getBoardState()[i][j]==2){
+        else if (gameState.getBoardState()[i][j].getColor()==2){
             gameState.setDeadWhiteStones(gameState.getDeadWhiteStones()+1);
         }
-        gameState.getBoardState()[i][j]=0;
+        gameState.getBoardState()[i][j]=null;
     }
 
 }

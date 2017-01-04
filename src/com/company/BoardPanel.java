@@ -34,20 +34,20 @@ class BoardPanel extends JPanel{
         setSize(new Dimension(canvasSize,canvasSize));
     }
 
-    void drawGo(int[][] goState){
+    void drawGo(Stone[][] goState){
         this.removeAll();
         cells = new JButton[goSize][goSize];
         for(int i=0; i<goSize; i++){
             for (int j=0; j<goSize; j++){
                 cells[i][j] = new JButton();
                 this.add(cells[i][j]);
-                if (goState[i][j] == 0){
+                if (goState[i][j] == null){
                     cells[i][j].setBackground(blankCellColor);
                     cells[i][j].setText("");
                 }
                 else {
                     cells[i][j].setBackground(cellColor);
-                    cells[i][j].setText(String.valueOf(goState[i][j]));
+                    cells[i][j].setText(String.valueOf(goState[i][j].getColor()));
                 }
                 cells[i][j].setHorizontalAlignment(JTextField.CENTER);
                 cells[i][j].setFont(numberFont);
@@ -57,7 +57,6 @@ class BoardPanel extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (allowed(a,b)){
-                            controller.putStone(a,b);
                             putStone(a,b);
                         }
                     }
@@ -79,6 +78,7 @@ class BoardPanel extends JPanel{
     }
 
     private void putStone(int i, int j){
+        controller.putStone(i,j);
         cells[i][j].setBackground(cellColor);
         cells[i][j].setText(String.valueOf(controller.getCurrentPlayer()));
         controller.switchTurn();

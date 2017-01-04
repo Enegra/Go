@@ -18,11 +18,6 @@ class BoardUI extends JFrame{
     private void prepareGUI(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(200,400));
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        Point middle = new Point(screenSize.width / 2, screenSize.height / 2);
-//        Point newLocation = new Point(middle.x - (this.getWidth() / 2),
-//                middle.y - (this.getHeight() / 2));
-//        this.setLocation(newLocation);
         this.setLocationRelativeTo(null);
         this.setLayout(null);
         this.setTitle("Go");
@@ -37,7 +32,7 @@ class BoardUI extends JFrame{
         controlPanel.setVisible(true);
     }
 
-    void drawGo(int[][] goState, GameController controller){
+    void drawGo(Stone[][] goState, GameController controller){
         boardPanel = new BoardPanel(controller);
         boardPanel.prepareBoard(goState.length);
         this.setSize(boardPanel.getCanvasSize()+270, boardPanel.getCanvasSize()+80);
@@ -47,6 +42,10 @@ class BoardUI extends JFrame{
         boardPanel.drawGo(goState);
         boardPanel.revalidate();
         this.setLocationRelativeTo(null);
+    }
+
+    ControlPanel getControlPanel(){
+        return controlPanel;
     }
 
 }
