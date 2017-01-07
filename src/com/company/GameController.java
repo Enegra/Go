@@ -36,7 +36,7 @@ public class GameController {
         boardUI = new BoardUI();
         boardUI.getControlPanel().getTurnLabel().setVisible(true);
         boardUI.getControlPanel().getTurnLabel().setText("Current turn: " + currentPlayer);
-        boardUI.drawGo(gameState.getBoardState(), this);
+        boardUI.drawGo(this);
     }
 
     void switchTurn(){
@@ -69,6 +69,10 @@ public class GameController {
             gameState.setDeadWhiteStones(gameState.getDeadWhiteStones()+1);
         }
         gameState.getBoardState()[i][j]=null;
+    }
+
+    GameState getGameState(){
+        return gameState;
     }
 
 }

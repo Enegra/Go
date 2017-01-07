@@ -32,20 +32,22 @@ class BoardUI extends JFrame{
         controlPanel.setVisible(true);
     }
 
-    void drawGo(Stone[][] goState, GameController controller){
+    void drawGo(GameController controller){
         boardPanel = new BoardPanel(controller);
-        boardPanel.prepareBoard(goState.length);
         this.setSize(boardPanel.getCanvasSize()+270, boardPanel.getCanvasSize()+80);
         this.add(boardPanel);
         boardPanel.setBounds(240, 20, boardPanel.getCanvasSize(), boardPanel.getCanvasSize());
         boardPanel.setVisible(true);
-        boardPanel.drawGo(goState);
         boardPanel.revalidate();
         this.setLocationRelativeTo(null);
     }
 
     ControlPanel getControlPanel(){
         return controlPanel;
+    }
+
+    BoardPanel getBoardPanel(){
+        return boardPanel;
     }
 
 }
