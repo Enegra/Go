@@ -59,6 +59,7 @@ public class GameController {
         Stone stone = new Stone(currentPlayer);
 
         gameState.getBoardState()[i][j]=stone;
+        checkCapturing(gameState.getBoardState(), i, j, currentPlayer);
     }
 
     void takeStone(int i, int j){
@@ -75,4 +76,37 @@ public class GameController {
         return gameState;
     }
 
+    boolean checkLiberty(Stone[][] position, boolean[][] testing, int x, int y, int color){
+        // out of the board there aren't liberties
+        if(x < 0 || x >= position.length || y < 0 || y >= position.length) return true;
+        // however empty field means liberty
+        if(position[x][y] == null) return false;
+        // already tested field or stone of enemy isn't giving us a liberty.
+        if(testing[x][y] == true || position[x][y].getColor() == color){
+            return true;
+        }
+        // set this field as tested
+        testing[x][y] = true;
+
+        // in this case we are checking our stone, if we get 4 trues, it has no liberty
+        return 	checkLiberty(position, testing, x, y-1, color) &&
+                checkLiberty(position, testing, x, y+1, color) &&
+                checkLiberty(position, testing, x-1, y, color) &&
+                checkLiberty(position, testing, x+1, y, color);
+    }
+
+    void checkCapturing(Stone[][] position, int x, int y, int color){
+        // var captured = [];
+        // is there a stone possible to capture?
+        if(x >= 0 && x < position.length && y >= 0 && y < position.length && position[x][y].getColor() == color) {
+            // create testing map
+            boolean[][] testing = new boolean[19][19];
+            // if it has zero liberties capture it
+            if(checkLiberty(position, testing, x, y, color)) {
+                // capture stones from game
+                takeStone(x,y);
+            }
+        }
+        // return captured;
+    }
 }
