@@ -56,7 +56,9 @@ public class GameController {
     }
 
     void putStone(int i, int j){
-        gameState.getBoardState()[i][j]=new Stone(currentPlayer);
+        Stone stone = new Stone(currentPlayer);
+
+        gameState.getBoardState()[i][j]=stone;
     }
 
     void takeStone(int i, int j){
