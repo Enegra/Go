@@ -1,7 +1,6 @@
 package com.company;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by agnie on 12/18/2016.
@@ -62,16 +61,8 @@ public class GameController {
 
     void putStone(int i, int j) {
         Stone stone = new Stone(currentPlayer);
-
         gameState.getBoardState()[i][j] = stone;
-
-        ArrayList<Stone> captured = new ArrayList<>();
-        checkCapturing(gameState.getBoardState(), i+1, j, opposingPlayer);
-        checkCapturing(gameState.getBoardState(), i-1, j, opposingPlayer);
-        checkCapturing(gameState.getBoardState(), i, j+1, opposingPlayer);
-        checkCapturing(gameState.getBoardState(), i, j-1, opposingPlayer);
-
-//        checkCapturing(gameState.getBoardState(), i, j, currentPlayer);
+        killCaptured(i,j);
     }
 
     void takeStone(int i, int j) {
@@ -89,20 +80,30 @@ public class GameController {
         return gameState;
     }
 
-    void takeStoneGroup(ArrayList<ArrayList<Integer>> capturedCoordinates){
-        for (int i = 0; i < capturedCoordinates.size() ; i++) {
-            takeStone(capturedCoordinates.get(i).get(0), capturedCoordinates.get(i).get(1));
-            System.out.println("stone removed: " + capturedCoordinates.get(i).get(0) + " " + capturedCoordinates.get(i).get(1));
+    private void killCaptured(int i, int j){
+        ArrayList<ArrayList<Integer>> captured = new ArrayList<>();
+        captured.addAll(checkCapturing(gameState.getBoardState(), i+1, j, opposingPlayer));
+        captured.addAll(checkCapturing(gameState.getBoardState(), i-1, j, opposingPlayer));
+        captured.addAll(checkCapturing(gameState.getBoardState(), i, j+1, opposingPlayer));
+        captured.addAll(checkCapturing(gameState.getBoardState(), i, j-1, opposingPlayer));
+        takeStoneGroup(captured);
+//        checkCapturing(gameState.getBoardState(), i, j, currentPlayer);
+    }
+
+    private void takeStoneGroup(ArrayList<ArrayList<Integer>> capturedCoordinates){
+        for (ArrayList<Integer> capturedCoordinate : capturedCoordinates) {
+            takeStone(capturedCoordinate.get(0), capturedCoordinate.get(1));
+            System.out.println("stone removed: " + capturedCoordinate.get(0) + " " + capturedCoordinate.get(1));
         }
     }
 
-    boolean checkLiberty(Stone[][] position, boolean[][] testing, int x, int y, int color) {
+    private boolean checkLiberty(Stone[][] position, boolean[][] testing, int x, int y, int color) {
         // out of the board there aren't liberties
         if (x < 0 || x >= position.length || y < 0 || y >= position.length) return true;
         // however empty field means liberty
         if (position[x][y] == null) return false;
         // already tested field or stone of enemy isn't giving us a liberty.
-        if (testing[x][y] == true || position[x][y].getColor() != color) {
+        if (testing[x][y] || position[x][y].getColor() != color) {
             return true;
         }
         // set this field as tested
@@ -115,7 +116,7 @@ public class GameController {
                 checkLiberty(position, testing, x + 1, y, color);
     }
 
-    void checkCapturing(Stone[][] position, int x, int y, int color) {
+    private ArrayList<ArrayList<Integer>> checkCapturing(Stone[][] position, int x, int y, int color) {
        ArrayList<ArrayList<Integer>> capturedCoordinates = new ArrayList<>();
         // is there a stone possible to capture?
             if (position[x][y] != null  && position[x][y].getColor() == color) {
@@ -130,8 +131,9 @@ public class GameController {
                     // capture stones from game
                     //takeStone(x, y);
                 }
-                takeStoneGroup(capturedCoordinates);
+//                takeStoneGroup(capturedCoordinates);
             }
+            return capturedCoordinates;
 
     }
 }
