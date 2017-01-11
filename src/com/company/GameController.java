@@ -13,10 +13,6 @@ public class GameController {
     private ArrayList<GameState> gameFlow;
     private GameState gameState;
     private ArrayList<ArrayList<Integer>> capturedCoordinates = new ArrayList<>();
-    private int[] coordinatesX = new int[19];
-    private int[] coordinatesY = new int[19];
-    private int k = 0;
-    private boolean[][] testing = new boolean[19][19];
 
     GameController() {
         newGame();
@@ -71,9 +67,9 @@ public class GameController {
     }
 
     void takeStone(int i, int j) {
-        if (gameState.getBoardState()[i][j].getColor() == 1) {
+        if (gameState.getBoardState()[i][j].getColor() == 0) {
             gameState.setDeadBlackStones(gameState.getDeadBlackStones() + 1);
-        } else if (gameState.getBoardState()[i][j].getColor() == 2) {
+        } else if (gameState.getBoardState()[i][j].getColor() == 1) {
             gameState.setDeadWhiteStones(gameState.getDeadWhiteStones() + 1);
         }
         gameState.getBoardState()[i][j] = null;
@@ -86,12 +82,13 @@ public class GameController {
     }
 
     private void killCaptured(int i, int j) {
-        checkCapturing(i + 1, j, opposingPlayer);
-        checkCapturing(i - 1, j, opposingPlayer);
-        checkCapturing(i, j + 1, opposingPlayer);
-        checkCapturing(i, j - 1, opposingPlayer);
+        boolean[][] checked = new boolean[19][19];
+        checkCapturing(i + 1, j, opposingPlayer, checked);
+        checkCapturing(i - 1, j, opposingPlayer, checked);
+        checkCapturing(i, j + 1, opposingPlayer, checked);
+        checkCapturing(i, j - 1, opposingPlayer, checked);
         takeStoneGroup(capturedCoordinates);
-        testing = new boolean[19][19];
+        capturedCoordinates.clear();
     }
 
     private void takeStoneGroup(ArrayList<ArrayList<Integer>> capturedCoordinates) {
@@ -121,44 +118,36 @@ public class GameController {
                 checkLiberty(testing, x + 1, y, color);
     }
 
-    private void checkCapturing(int x, int y, int color) {
-
+    private void checkCapturing(int x, int y, int color, boolean[][] checked) {
         // is there a stone possible to capture?
         if (gameState.getBoardState()[x][y] != null && gameState.getBoardState()[x][y].getColor() == color) {
-            // create testing map
-
             // if it has zero liberties capture it
-            if (checkLiberty(testing, x, y, color)) {
+            if (checkLiberty(checked, x, y, color)) {
                 ArrayList<Integer> coordinates = new ArrayList<>();
                 coordinates.add(x);
                 coordinates.add(y);
                 System.out.println("adding " + x + " " + y);
                 capturedCoordinates.add(coordinates);
 
-                //Dirty Lithfix right here
-                coordinatesX[k] = x;
-                coordinatesY[k] = y;
-                k++;
-
                 if (!containsCoordinates(x+1, y)) {
-                    checkCapturing(x + 1, y, color);
+                    checkCapturing(x + 1, y, color, checked);
                 }
                 if (!containsCoordinates(x-1, y)) {
-                    checkCapturing(x - 1, y, color);
+                    checkCapturing(x - 1, y, color, checked);
                 }
                 if (!containsCoordinates(x, y+1)) {
-                    checkCapturing(x, y + 1, color);
+                    checkCapturing(x, y + 1, color, checked);
                 }
                 if (!containsCoordinates(x, y-1)) {
-                    checkCapturing(x, y - 1, color);
+                    checkCapturing(x, y - 1, color, checked);
                 }
             }
         }
     }
 
     private boolean containsCoordinates(int x, int y){
-        for (int i = 0; i < coordinatesX.length ; i++) {
-            if((coordinatesX[i] == x) && (coordinatesY[i] == y)){
+        for (ArrayList<Integer> capturedCoordinate : capturedCoordinates) {
+            if ((capturedCoordinate.get(0) == x) && (capturedCoordinate.get(1) == y)) {
                 return true;
             }
         }
