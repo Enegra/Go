@@ -56,14 +56,16 @@ public class GameController {
     }
 
     boolean moveAllowed(int i, int j) {
-        //// TODO: 1/1/2017
-        return false;
+        boolean[][] checked = new boolean[19][19];
+        return !checkLiberty(checked, i, j, currentPlayer);
     }
 
     void putStone(int i, int j) {
-        Stone stone = new Stone(currentPlayer);
-        gameState.getBoardState()[i][j] = stone;
-        killCaptured(i, j);
+        if (moveAllowed(i, j)){
+            Stone stone = new Stone(currentPlayer);
+            gameState.getBoardState()[i][j] = stone;
+            killCaptured(i, j);
+        }
     }
 
     void takeStone(int i, int j) {

@@ -42,32 +42,21 @@ class BoardPanel extends JPanel {
                 int positionY = (int) (e.getY() - cellSize) / cellSize;
                 int gridPositionX = positionX * cellSize + cellSize;
                 int gridPositionY = positionY * cellSize + cellSize;
-                System.out.println(positionX + " " + gridPositionX);
 
                 if (Math.abs(gridPositionX - e.getX()) < cellSize/2){
                     if (Math.abs(gridPositionY - e.getY()) < cellSize/2){
-                        if (allowed(positionX, positionY)) {
                             putStone(positionX, positionY);
-                        }
                     } else if (Math.abs((gridPositionY+cellSize)-e.getY()) < cellSize/2){
-                        if (allowed(positionX, positionY+1)) {
                             putStone(positionX, positionY+1);
-                        }
                     }
                 }
                 else if (Math.abs((gridPositionX+cellSize))-e.getX() < cellSize/2){
                     if (Math.abs(gridPositionY - e.getY()) < cellSize/2){
-                        if (allowed(positionX+1, positionY)) {
                             putStone(positionX+1, positionY);
-                        }
                     } else if (Math.abs((gridPositionY+cellSize)-e.getY()) < cellSize/2){
-                        if (allowed(positionX+1, positionY+1)) {
                             putStone(positionX+1, positionY+1);
-                        }
                     }
                 }
-                System.out.println(positionX + " " + gridPositionX);
-                System.out.println(positionY + " " + gridPositionY);
             }
         });
     }
@@ -121,10 +110,6 @@ class BoardPanel extends JPanel {
         cells[i][j].setText("");
         revalidate();
         repaint();
-    }
-
-    private boolean allowed(int i, int j) {
-        return controller.getGameState().getBoardState()[i][j] == null;
     }
 
 }
