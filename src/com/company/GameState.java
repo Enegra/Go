@@ -12,7 +12,7 @@ public class GameState {
     private int whiteStonesInAtari;
 
     GameState(){
-        boardState = new Stone[19][19];
+       boardState = new Stone[19][19];
     }
 
     GameState(Stone[][] boardState, int deadBlackStones, int deadWhiteStones, int blackStonesInAtari, int whiteStonesInAtari){
@@ -24,6 +24,7 @@ public class GameState {
     }
 
     GameState(GameState otherState){
+//        System.arraycopy(otherState.boardState, 0, boardState, 0, otherState.boardState.length);
         this.boardState=otherState.boardState;
         this.deadBlackStones=otherState.deadBlackStones;
         this.deadWhiteStones=otherState.deadWhiteStones;

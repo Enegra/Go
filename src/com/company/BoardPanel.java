@@ -100,7 +100,6 @@ class BoardPanel extends JPanel {
 
     private void putStone(int i, int j) {
         controller.putStone(i, j);
-        controller.switchTurn();
         this.revalidate();
         this.repaint();
     }

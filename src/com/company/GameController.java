@@ -20,7 +20,7 @@ public class GameController {
     }
 
     private void newGame() {
-        gameFlow = new ArrayList<GameState>();
+        gameFlow = new ArrayList<>();
         gameState = new GameState();
         gameFlow.add(new GameState(gameState));
     }
@@ -53,7 +53,7 @@ public class GameController {
         gameFlow.add(new GameState(gameState));
     }
 
-    boolean moveAllowed(int i, int j) {
+    private boolean moveAllowed(int i, int j) {
         boolean[][] checked = new boolean[19][19];
         int liberties=4;
         if (checkLiberty(checked, i, j - 1, currentPlayer)){
@@ -68,7 +68,19 @@ public class GameController {
         if (checkLiberty(checked, i - 1, j, currentPlayer)){
             liberties--;
         }
-        return (liberties>0) && gameState.getBoardState()[i][j]==null;
+        return (liberties>0) && gameState.getBoardState()[i][j]==null && superko(i,j);
+    }
+
+    private boolean superko(int i, int j){
+        for (GameState state : gameFlow){
+            System.out.println(state.getDeadBlackStones());
+            System.out.println(state.getDeadWhiteStones());
+            System.out.println(state.getBoardState()[i][j]==null);
+            if (state.getBoardState()[i][j]!=null){
+                return false;
+            }
+        }
+        return true;
     }
 
     void putStone(int i, int j) {
@@ -76,6 +88,7 @@ public class GameController {
             Stone stone = new Stone(currentPlayer);
             gameState.getBoardState()[i][j] = stone;
             killCaptured(i, j);
+            switchTurn();
         }
     }
 
