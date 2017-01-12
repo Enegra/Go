@@ -28,9 +28,7 @@ public class GameController {
     void setTurn(int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
-
-    ;
-
+    
     int getCurrentPlayer() {
         return currentPlayer;
     }
@@ -57,7 +55,20 @@ public class GameController {
 
     boolean moveAllowed(int i, int j) {
         boolean[][] checked = new boolean[19][19];
-        return !checkLiberty(checked, i, j, currentPlayer);
+        int liberties=4;
+        if (checkLiberty(checked, i, j - 1, currentPlayer)){
+            liberties--;
+        }
+        if (checkLiberty(checked, i, j + 1, currentPlayer)){
+            liberties--;
+        }
+        if (checkLiberty(checked, i + 1, j, currentPlayer)){
+            liberties--;
+        }
+        if (checkLiberty(checked, i - 1, j, currentPlayer)){
+            liberties--;
+        }
+        return (liberties>0) && gameState.getBoardState()[i][j]==null;
     }
 
     void putStone(int i, int j) {
