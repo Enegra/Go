@@ -24,8 +24,15 @@ public class GameState {
     }
 
     GameState(GameState otherState){
-//        System.arraycopy(otherState.boardState, 0, boardState, 0, otherState.boardState.length);
-        this.boardState=otherState.boardState;
+        boardState = new Stone[19][19];
+            for (int i=0; i<boardState.length; i++){
+                for (int j=0; j<boardState[i].length; j++){
+                    if (otherState.boardState[i][j]!=null){
+                        boardState[i][j] = new Stone(otherState.boardState[i][j]);
+                    }
+                }
+            }
+//        this.boardState=otherState.boardState;
         this.deadBlackStones=otherState.deadBlackStones;
         this.deadWhiteStones=otherState.deadWhiteStones;
         this.blackStonesInAtari=otherState.blackStonesInAtari;

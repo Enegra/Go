@@ -3,12 +3,16 @@ package com.company;
 /**
  * Created by agnie on 1/2/2017.
  */
-public class Stone {
+class Stone {
 
     private int color;
 
     Stone(int color){
         this.color = color;
+    }
+
+    Stone(Stone another){
+        this.color = another.color;
     }
 
     int getColor() {

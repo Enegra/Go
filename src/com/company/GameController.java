@@ -73,10 +73,7 @@ public class GameController {
 
     private boolean superko(int i, int j){
         for (GameState state : gameFlow){
-            System.out.println(state.getDeadBlackStones());
-            System.out.println(state.getDeadWhiteStones());
-            System.out.println(state.getBoardState()[i][j]==null);
-            if (state.getBoardState()[i][j]!=null){
+            if (state.getBoardState()[i][j]!=null && state.getBoardState()[i][j].getColor() == currentPlayer){
                 return false;
             }
         }
