@@ -9,7 +9,7 @@ public class Player {
 
     int size = 19;
 
-    private int[] currentTopMove = new int[2];
+    ArrayList<Integer> currentBestMove;
     private int currentTopScore;
 
     Player(){
@@ -34,37 +34,29 @@ public class Player {
 
     private ArrayList<Integer> GetBestMove(GameState gamestate, Player p) {
         ArrayList<Integer> bestMove = new ArrayList<>();
-
         GameController controller = new GameController(gamestate);
 
-        int[][] possibleMoves = controller.getGameState().getFreeSpots();
+        ArrayList<ArrayList<Integer>> possibleMoves = controller.getGameState().getEmptyFields();
 
-        for (int i = 0; i < possibleMoves.length; i++) {
-            for (int j = 0; j < possibleMoves.length; j++) {
+        for (int i = 0; i < possibleMoves.size(); i++) {
 
                 GameController newController = new GameController(controller.getGameState());
-                int[] newSpot = new int[2];
-                newSpot[0] = possibleMoves[i][0];
-                newSpot[1] = possibleMoves[0][j];
+                ArrayList<Integer> newSpot = possibleMoves.get(i);
 
-                controller.putStone(newSpot[0], newSpot[1]);
+                controller.putStone(newSpot.get(0), newSpot.get(1));
 
                 if(controller.getCurrentPlayer() == 0){
                     if(controller.getGameState().getDeadBlackStones() < newController.getGameState().getDeadBlackStones()){
                         currentTopScore = newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones();
-                        currentTopMove[0] = newSpot[0];
-                        currentTopMove[1] = newSpot[1];
+                        currentBestMove = newSpot;
                     }
                 } else {
                     if(controller.getGameState().getDeadWhiteStones() < newController.getGameState().getDeadWhiteStones()) {
                         currentTopScore = newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones();
-                        currentTopMove[0] = newSpot[0];
-                        currentTopMove[1] = newSpot[1];
+                        currentBestMove = newSpot;
                     }
                 }
-                bestMove.add(currentTopMove[0]);
-                bestMove.add(currentTopMove[1]);
-            }
+                bestMove = currentBestMove;
         }
         return bestMove;
     }

@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.ArrayList;
+
 /**
  * Created by agnie on 12/18/2016.
  */
@@ -43,19 +45,19 @@ public class GameState {
         return boardState;
     }
 
-    int[][] getFreeSpots() {
-        int k = 0;
-        int[][] emptySpots = new int[19][19];
-        for (int i = 0; i < getBoardState().length ; i++) {
+    ArrayList<ArrayList<Integer>> getEmptyFields() {
+        ArrayList<ArrayList<Integer>> emptyFields = new ArrayList<>();
+        for (int i = 0; i < getBoardState().length; i++) {
             for (int j = 0; j < getBoardState().length ; j++) {
                 if(getBoardState()[i][j] == null) {
-                    emptySpots[k][0] = i;
-                    emptySpots[1][k] = j;
-                    k++;
+                    ArrayList<Integer> coordinates = new ArrayList<>();
+                    coordinates.add(i);
+                    coordinates.add(j);
+                    emptyFields.add(coordinates);
                 }
             }
         }
-        return emptySpots;
+        return emptyFields;
     }
 
     int getDeadBlackStones(){
