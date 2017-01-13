@@ -43,6 +43,21 @@ public class GameState {
         return boardState;
     }
 
+    int[][] getFreeSpots() {
+        int k = 0;
+        int[][] emptySpots = new int[19][19];
+        for (int i = 0; i < getBoardState().length ; i++) {
+            for (int j = 0; j < getBoardState().length ; j++) {
+                if(getBoardState()[i][j] == null) {
+                    emptySpots[k][0] = i;
+                    emptySpots[1][k] = j;
+                    k++;
+                }
+            }
+        }
+        return emptySpots;
+    }
+
     int getDeadBlackStones(){
         return deadBlackStones;
     }
