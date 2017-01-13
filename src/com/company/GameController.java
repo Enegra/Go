@@ -19,6 +19,12 @@ public class GameController {
         displayBoard();
     }
 
+    GameController(GameState gameState){
+        gameFlow = new ArrayList<>();
+        this.gameState = gameState;
+        gameFlow.add(new GameState(gameState));
+    }
+
     private void newGame() {
         gameFlow = new ArrayList<>();
         gameState = new GameState();
@@ -53,7 +59,7 @@ public class GameController {
         gameFlow.add(new GameState(gameState));
     }
 
-    private boolean moveAllowed(int i, int j) {
+    boolean moveAllowed(int i, int j) {
         boolean[][] checked = new boolean[19][19];
         int liberties=4;
         if (checkLiberty(checked, i, j - 1, currentPlayer)){

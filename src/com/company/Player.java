@@ -7,19 +7,19 @@ import java.util.ArrayList;
  */
 public class Player {
 
-    private GameController controller;
+    int size = 19;
 
-    Player(GameController controller){
-        this.controller = controller;
+    Player(){
+
     }
 
     private ArrayList<ArrayList<Integer>> movePool = new ArrayList<>();
 
     private void addInitialMoves(){
         setCoords(3,3);
-        setCoords(3, controller.getGameState().getBoardState().length-4);
-        setCoords(controller.getGameState().getBoardState().length-4,3);
-        setCoords(controller.getGameState().getBoardState().length-4,controller.getGameState().getBoardState().length-4);
+        setCoords(3, size-2);
+        setCoords(size-2,3);
+        setCoords(size-2,size-2);
     }
 
     private void setCoords(int i, int j){
