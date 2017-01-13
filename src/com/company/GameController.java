@@ -21,7 +21,7 @@ public class GameController {
 
     GameController(GameState gameState){
         gameFlow = new ArrayList<>();
-        this.gameState = gameState;
+        this.gameState = new GameState(gameState);
         gameFlow.add(new GameState(gameState));
     }
 
