@@ -46,12 +46,14 @@ public class Player {
                 controller.putStone(newSpot.get(0), newSpot.get(1));
 
                 if(controller.getCurrentPlayer() == 0){
-                    if(controller.getGameState().getDeadBlackStones() < newController.getGameState().getDeadBlackStones()){
+                    if((controller.getGameState().getDeadBlackStones() < newController.getGameState().getDeadBlackStones())
+                            && (newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones() > currentTopScore) ){
                         currentTopScore = newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones();
                         currentBestMove = newSpot;
                     }
                 } else {
-                    if(controller.getGameState().getDeadWhiteStones() < newController.getGameState().getDeadWhiteStones()) {
+                    if((controller.getGameState().getDeadWhiteStones() < newController.getGameState().getDeadWhiteStones())
+                            && (newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones() > currentTopScore)) {
                         currentTopScore = newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones();
                         currentBestMove = newSpot;
                     }
