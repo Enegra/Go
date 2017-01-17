@@ -10,8 +10,6 @@ public class Player {
     int size = 19;
     int maxDepth = 3;
 
-    ArrayList<Integer> currentBestMove;
-    private int currentTopScore;
 
     Player() {
 
@@ -35,158 +33,115 @@ public class Player {
 
     private ArrayList<Move> getBestMoveMinMax(GameState gamestate, int player, int depth) {
         ArrayList<Move> bestMove = new ArrayList<>();
-
         if (depth > maxDepth) {
             return bestMove;
         }
-
         GameController controller = new GameController(gamestate);
-
         ArrayList<ArrayList<Integer>> possibleMoves = controller.getGameState().getEmptyFields();
 
-        for (int i = 0; i < possibleMoves.size(); i++) {
-
+        for (ArrayList<Integer> possibleMove : possibleMoves) {
             GameController newController = new GameController(controller.getGameState());
-            ArrayList<Integer> newSpot = possibleMoves.get(i);
+            ArrayList<Integer> newSpot = possibleMove;
 
             controller.putStone(newSpot.get(0), newSpot.get(1));
 
             //If Player is player 1
             if (controller.getCurrentPlayer() == 0) {
-
-                //Maxing if this is our turn
-                if (controller.getCurrentPlayer() == player) {
-                    if (controller.getGameState().getDeadBlackStones() < newController.getGameState().getDeadBlackStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones() > currentTopScore)) {
-                            currentTopScore = newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones();
-                            currentBestMove = newSpot;
-                        }
-                    }
-                } else {
-                    //Min if it is opponents turn
-                    if (controller.getGameState().getDeadBlackStones() > newController.getGameState().getDeadBlackStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), controller.getGameState().getDeadBlackStones() - newController.getGameState().getDeadBlackStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones() < currentTopScore)) {
-                            currentTopScore = controller.getGameState().getDeadBlackStones() - newController.getGameState().getDeadBlackStones();
-                            currentBestMove = newSpot;
-                        }
-                    }
-                }
+                findScoreWhite(controller, newController, newSpot, player, bestMove);
                 bestMove.addAll(getBestMoveMinMax(newController.getGameState(), player, depth++));
-                //If Player is player 2
-            } else {
-
-                //Maxing if this is our turn
-                if (controller.getCurrentPlayer() == player) {
-                    if (controller.getGameState().getDeadWhiteStones() < newController.getGameState().getDeadWhiteStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones() > currentTopScore)) {
-                            currentTopScore = newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones();
-                            currentBestMove = newSpot;
-                        }
-                    }
-                } else {
-                    //Min if it is opponents turn
-                    if (controller.getGameState().getDeadWhiteStones() > newController.getGameState().getDeadWhiteStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), controller.getGameState().getDeadWhiteStones() - newController.getGameState().getDeadWhiteStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones() < currentTopScore)) {
-                            currentTopScore = controller.getGameState().getDeadWhiteStones() - newController.getGameState().getDeadWhiteStones();
-                            currentBestMove = newSpot;
-                        }
-                    }
-                }
+            }
+            //Player is player 2
+            else {
+                findScoreBlack(controller, newController, newSpot, player, bestMove);
                 bestMove.addAll(getBestMoveMinMax(newController.getGameState(), player, depth++));
             }
         }
         return bestMove;
     }
-
 
     private ArrayList<Move> getBestMoveAlphaBeta(GameState gamestate, int player, int depth) {
         ArrayList<Move> bestMove = new ArrayList<>();
-
         if (depth > maxDepth) {
             return bestMove;
         }
-
         GameController controller = new GameController(gamestate);
-
         ArrayList<ArrayList<Integer>> possibleMoves = controller.getGameState().getEmptyFields();
 
-        for (int i = 0; i < possibleMoves.size(); i++) {
-
+        for (ArrayList<Integer> possibleMove : possibleMoves) {
             GameController newController = new GameController(controller.getGameState());
-            ArrayList<Integer> newSpot = possibleMoves.get(i);
+            ArrayList<Integer> newSpot = possibleMove;
 
             controller.putStone(newSpot.get(0), newSpot.get(1));
-
+            ArrayList<Move> bestMoveClone = new ArrayList<>(bestMove);
             //If Player is player 1
             if (controller.getCurrentPlayer() == 0) {
-
-                //Maxing if this is our turn
-                if (controller.getCurrentPlayer() == player) {
-                    if (controller.getGameState().getDeadBlackStones() < newController.getGameState().getDeadBlackStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones() > currentTopScore)) {
-                            currentTopScore = newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones();
-                            currentBestMove = newSpot;
-                        }
-                    } else{
-                        return bestMove;
-                    }
+                findScoreWhite(controller, newController, newSpot, player, bestMove);
+                if (!bestMove.equals(bestMoveClone)) {
+                    bestMove.addAll(getBestMoveMinMax(newController.getGameState(), player, depth++));
                 } else {
-                    //Min if it is opponents turn
-                    if (controller.getGameState().getDeadBlackStones() > newController.getGameState().getDeadBlackStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), controller.getGameState().getDeadBlackStones() - newController.getGameState().getDeadBlackStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadBlackStones() - controller.getGameState().getDeadBlackStones() < currentTopScore)) {
-                            currentTopScore = controller.getGameState().getDeadBlackStones() - newController.getGameState().getDeadBlackStones();
-                            currentBestMove = newSpot;
-                        }
+                    return bestMove;
+                }
+            }
+            //If Player is player 2
+            else {
+                if (controller.getCurrentPlayer() == 0) {
+                    findScoreBlack(controller, newController, newSpot, player, bestMove);
+                    if (!bestMove.equals(bestMoveClone)) {
+                        bestMove.addAll(getBestMoveMinMax(newController.getGameState(), player, depth++));
                     } else {
                         return bestMove;
                     }
                 }
-                bestMove.addAll(getBestMoveMinMax(newController.getGameState(), player, depth++));
-                //If Player is player 2
-            } else {
-
-                //Maxing if this is our turn
-                if (controller.getCurrentPlayer() == player) {
-                    if (controller.getGameState().getDeadWhiteStones() < newController.getGameState().getDeadWhiteStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones() > currentTopScore)) {
-                            currentTopScore = newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones();
-                            currentBestMove = newSpot;
-                        }
-                    } else {
-                        return bestMove;
-                    }
-                } else {
-                    //Min if it is opponents turn
-                    if (controller.getGameState().getDeadWhiteStones() > newController.getGameState().getDeadWhiteStones()) {
-                        Move move = new Move(newSpot.get(0), newSpot.get(1), controller.getGameState().getDeadWhiteStones() - newController.getGameState().getDeadWhiteStones());
-                        bestMove.add(move);
-                        if ((newController.getGameState().getDeadWhiteStones() - controller.getGameState().getDeadWhiteStones() < currentTopScore)) {
-                            currentTopScore = controller.getGameState().getDeadWhiteStones() - newController.getGameState().getDeadWhiteStones();
-                            currentBestMove = newSpot;
-                        }
-                    } else{
-                        return bestMove;
-                    }
-                }
-                bestMove.addAll(getBestMoveMinMax(newController.getGameState(), player, depth++));
             }
         }
         return bestMove;
     }
 
+    private void findScoreWhite(GameController controller, GameController newController, ArrayList<Integer> newSpot, int player, ArrayList<Move> bestMove) {
+        Move move = new Move(newSpot.get(0), newSpot.get(1), 0);
+        if (controller.getCurrentPlayer() == player) {
+            if (controller.getGameState().getDeadBlackStones() <= newController.getGameState().getDeadBlackStones()) {
+                if (controller.getGameState().getDeadBlackStones() < newController.getGameState().getDeadBlackStones()) {
+                    move.setRank(100);
+                } else {
+                    move.setRank(10);
+                }
+                bestMove.add(move);
+            }
+        } else {
+            //Min if it is opponents turn
+            if (controller.getGameState().getDeadBlackStones() >= newController.getGameState().getDeadBlackStones()) {
+                if (controller.getGameState().getDeadBlackStones() > newController.getGameState().getDeadBlackStones()) {
+                    move.setRank(-100);
+                } else {
+                    move.setRank(-10);
+                }
+                bestMove.add(move);
+            }
+        }
+    }
 
+    private void findScoreBlack(GameController controller, GameController newController, ArrayList<Integer> newSpot, int player, ArrayList<Move> bestMove) {
+        Move move = new Move(newSpot.get(0), newSpot.get(1), 0);
+        if (controller.getCurrentPlayer() == player) {
+            if (controller.getGameState().getDeadWhiteStones() <= newController.getGameState().getDeadWhiteStones()) {
+                if (controller.getGameState().getDeadWhiteStones() < newController.getGameState().getDeadWhiteStones()) {
+                    move.setRank(100);
+                } else {
+                    move.setRank(10);
+                }
+                bestMove.add(move);
+            }
+        } else {
+            //Min if it is opponents turn
+            if (controller.getGameState().getDeadWhiteStones() >= newController.getGameState().getDeadWhiteStones()) {
+                if (controller.getGameState().getDeadWhiteStones() > newController.getGameState().getDeadWhiteStones()) {
+                    move.setRank(-100);
+                } else {
+                    move.setRank(-10);
+                }
+                bestMove.add(move);
+            }
+        }
+    }
 }
