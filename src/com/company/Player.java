@@ -31,7 +31,7 @@ public class Player {
         movePool.add(coordinate);
     }
 
-    public int[] getBest(int player, int depth, GameController controller) {
+    private int[] getBest(int player, int depth, GameController controller) {
         ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
 
         Move bestMove = new Move(-1, -1, 0);
@@ -71,7 +71,7 @@ public class Player {
         return new int[]{bestRow, bestCol, bestScore};
     }
 
-    public int[] getBestAlphaBeta(int player, int depth, GameController controller, int alpha, int beta) {
+    private int[] getBestAlphaBeta(int player, int depth, GameController controller, int alpha, int beta) {
         ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
 
         Move bestMove = new Move(-1, -1, 0);
@@ -115,7 +115,7 @@ public class Player {
         return new int[]{bestRow, bestCol, (player == 1) ? alpha : beta};
     }
 
-    public int[] getBestNegascout(int player, int depth, GameController controller, int alpha, int beta) {
+    private int[] getBestNegascout(int player, int depth, GameController controller, int alpha, int beta) {
         ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
         int currentScore;
         Move bestMove = new Move(-1, -1, 0);
@@ -189,15 +189,20 @@ public class Player {
         return possibleMove.getRank();
     }
 
-    public Move getMove(int player, GameController controller) {
+    public Move getMove(int player, GameController controller, int heuristic) {
         //int[] bestMove = (getBest(player, 0, controller));
         //int[] bestMove = (getBestAlphaBeta(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
-        int[] bestMove = (getBestNegascout(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        int[] bestMove;
+        if(heuristic == 0){
+            bestMove = (getBestNegascout(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        } else {
+            bestMove = (getBestDepthFirst(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        }
         Move move = new Move(bestMove[0], bestMove[1], bestMove[2]);
         return move;
     }
 
-    public int Quiesce(int player, int depth, GameController controller, int alpha, int beta) {
+    private int Quiesce(int player, int depth, GameController controller, int alpha, int beta) {
         ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
         int currentScore;
         Move bestMove = new Move(-1, -1, 0);
@@ -230,6 +235,49 @@ public class Player {
             }
         }
         return alpha;
+    }
+
+    private int[] getBestDepthFirst(int player, int depth, GameController controller, int alpha, int beta) {
+        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
+
+        Move bestMove = new Move(-1, -1, 0);
+
+        int currentScore;
+        int bestRow = -1;
+        int bestCol = -1;
+
+        int deadWhites = controller.getGameState().getDeadWhiteStones();
+        int deadBlacks = controller.getGameState().getDeadBlackStones();
+
+        if (alpha >= 1000 || possibleMoves.isEmpty() || depth > maxDepth) {
+            currentScore = (findScoreForMove(controller, bestMove, player, deadWhites, deadBlacks));
+            return new int[]{bestRow, bestCol, currentScore};
+        }
+        else {
+            for (Move possibleMove : possibleMoves) {
+                depth++;
+                GameController newControl = new GameController(controller.getGameState());
+                newControl.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = new Stone(player);
+                if (player == 1) {
+                    currentScore = getBestDepthFirst(depth, player - 1, newControl, alpha, beta)[0];
+                    if (currentScore > alpha) {
+                        alpha = currentScore;
+                        bestRow = possibleMove.getX();
+                        bestCol = possibleMove.getY();
+                    }
+                } else {
+                    currentScore = getBestDepthFirst(depth, player, newControl, alpha, beta)[0];
+                    if (currentScore < beta) {
+                        beta = currentScore;
+                        bestRow = possibleMove.getX();
+                        bestCol = possibleMove.getY();
+                    }
+                }
+                //  controller.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = null;
+                if (alpha >= beta) break;
+            }
+        }
+        return new int[]{bestRow, bestCol, (player == 1) ? alpha : beta};
     }
 }
 

@@ -1,5 +1,7 @@
 package com.company;
 
+import javafx.scene.control.ComboBox;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -92,4 +94,7 @@ public class ControlPanel extends JPanel{
         return turnLabel;
     }
 
+    JComboBox getHeuristicBox(){
+        return heuristicChoiceComboBox;
+    }
 }
