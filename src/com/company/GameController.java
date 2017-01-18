@@ -78,7 +78,7 @@ public class GameController {
         putStone(move.getX(), move.getY());
     }
 
-    private boolean moveAllowed(int i, int j) {
+    boolean moveAllowed(int i, int j) {
         boolean[][] checked = new boolean[19][19];
         int liberties = 4;
 

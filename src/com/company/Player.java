@@ -1,7 +1,6 @@
 package com.company;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by agnie on 1/12/2017.
@@ -15,27 +14,9 @@ public class Player {
     Player() {
     }
 
-    private ArrayList<ArrayList<Integer>> movePool = new ArrayList<>();
-
-    private void addInitialMoves() {
-        setCoords(3, 3);
-        setCoords(3, size - 2);
-        setCoords(size - 2, 3);
-        setCoords(size - 2, size - 2);
-    }
-
-    private void setCoords(int i, int j) {
-        ArrayList<Integer> coordinate = new ArrayList<>();
-        coordinate.add(i);
-        coordinate.add(j);
-        movePool.add(coordinate);
-    }
-
     private int[] getBest(int player, int depth, GameController controller) {
-        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
-
+        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player, controller);
         Move bestMove = new Move(-1, -1, 0);
-
         int bestScore = (player == 1) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int currentScore;
         int bestRow = -1;
@@ -72,10 +53,8 @@ public class Player {
     }
 
     private int[] getBestAlphaBeta(int player, int depth, GameController controller, int alpha, int beta) {
-        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
-
+        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player, controller);
         Move bestMove = new Move(-1, -1, 0);
-
         int currentScore;
         int bestRow = -1;
         int bestCol = -1;
@@ -86,9 +65,7 @@ public class Player {
         if ((depth > maxDepth) || possibleMoves.isEmpty()) {
             currentScore = (findScoreForMove(controller, bestMove, player, deadWhites, deadBlacks));
             return new int[]{bestRow, bestCol, currentScore};
-
         } else {
-
             for (Move possibleMove : possibleMoves) {
                 depth++;
                 GameController newControl = new GameController(controller.getGameState());
@@ -116,7 +93,7 @@ public class Player {
     }
 
     private int[] getBestNegascout(int player, int depth, GameController controller, int alpha, int beta) {
-        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
+        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player, controller);
         int currentScore;
         Move bestMove = new Move(-1, -1, 0);
 
@@ -193,7 +170,7 @@ public class Player {
         //int[] bestMove = (getBest(player, 0, controller));
         //int[] bestMove = (getBestAlphaBeta(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
         int[] bestMove;
-        if(heuristic == 0){
+        if (heuristic == 0) {
             bestMove = (getBestNegascout(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
         } else {
             bestMove = (getBestDepthFirst(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
@@ -203,7 +180,7 @@ public class Player {
     }
 
     private int Quiesce(int player, int depth, GameController controller, int alpha, int beta) {
-        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
+        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player, controller);
         int currentScore;
         Move bestMove = new Move(-1, -1, 0);
         int deadWhites = controller.getGameState().getDeadWhiteStones();
@@ -238,7 +215,7 @@ public class Player {
     }
 
     private int[] getBestDepthFirst(int player, int depth, GameController controller, int alpha, int beta) {
-        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player);
+        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player, controller);
 
         Move bestMove = new Move(-1, -1, 0);
 
@@ -252,8 +229,7 @@ public class Player {
         if (alpha >= 1000 || possibleMoves.isEmpty() || depth > maxDepth) {
             currentScore = (findScoreForMove(controller, bestMove, player, deadWhites, deadBlacks));
             return new int[]{bestRow, bestCol, currentScore};
-        }
-        else {
+        } else {
             for (Move possibleMove : possibleMoves) {
                 depth++;
                 GameController newControl = new GameController(controller.getGameState());

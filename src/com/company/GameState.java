@@ -45,39 +45,34 @@ public class GameState {
         return boardState;
     }
 
-    ArrayList<Move> getPossibleMoves() {
-        ArrayList<Move> possibleMoves = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (getBoardState()[i][j] == null) {
-                    Move move = new Move(i, j, 10);
-                    possibleMoves.add(move);
-                }
-            }
-        }
-        return possibleMoves;
-    }
-
-    ArrayList<Move> getStones(int player) {
+    ArrayList<Move> getStones(int player, GameController controller) {
         ArrayList<Move> stoneLocation = new ArrayList<>();
         for (int i = 0; i < getBoardState().length; i++) {
             for (int j = 0; j < getBoardState().length; j++) {
                 if (getBoardState()[i][j] != null && getBoardState()[i][j].getColor() != player) {
                     if((i+1 < getBoardState().length) && getBoardState()[i+1][j] == null){
-                        Move move = new Move(i+1, j, 10);
-                        stoneLocation.add(move);
+                        if (controller.moveAllowed(i+1,j)){
+                            Move move = new Move(i+1, j, 10);
+                            stoneLocation.add(move);
+                        }
                     }
                     if((i-1 > 0) &&getBoardState()[i-1][j] == null){
-                        Move move = new Move(i-1, j, 10);
-                        stoneLocation.add(move);
+                        if (controller.moveAllowed(i-1, j)) {
+                            Move move = new Move(i-1, j, 10);
+                            stoneLocation.add(move);
+                        }
                     }
                     if((j+1 < getBoardState().length) && getBoardState()[i][j+1] == null){
-                        Move move = new Move(i, j+1, 10);
-                        stoneLocation.add(move);
+                        if (controller.moveAllowed(i, j+1)){
+                            Move move = new Move(i, j+1, 10);
+                            stoneLocation.add(move);
+                        }
                     }
                     if((j-1 > 0) && getBoardState()[i][j-1] == null){
-                        Move move = new Move(i, j-1, 10);
-                        stoneLocation.add(move);
+                        if (controller.moveAllowed(i, j-1)){
+                            Move move = new Move(i, j-1, 10);
+                            stoneLocation.add(move);
+                        }
                     }
                 }
             }
