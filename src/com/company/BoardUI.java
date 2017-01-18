@@ -26,7 +26,7 @@ class BoardUI extends JFrame{
     }
 
     void setupControlPanel(){
-        controlPanel = new ControlPanel();
+        controlPanel = new ControlPanel(this);
         controlPanel.setBounds(0,0, 220,600);
         this.add(controlPanel);
         controlPanel.setVisible(true);

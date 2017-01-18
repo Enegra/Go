@@ -1,21 +1,26 @@
 package com.company;
 
-import javafx.scene.control.ComboBox;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by agnie on 12/20/2016.
  */
-public class ControlPanel extends JPanel{
+class ControlPanel extends JPanel{
 
-    private JLabel gameTypeChoiceLabel, heuristicChoiceLabel, turnLabel;
+    private JLabel turnLabel;
+    private JLabel scoreLabel;
+    private JLabel deadWhiteStonesLabel;
+    private JLabel deadBlackStonesLabel;
     private JComboBox gameTypeChoiceComboBox, heuristicChoiceComboBox;
-    private JButton startGameButton, pauseGameButton, skipGameButton;
+    private JButton skipGameButton;
+    private BoardUI boardUI;
 
-    ControlPanel(){
+    ControlPanel(BoardUI boardUI){
         setupPanel();
+        this.boardUI = boardUI;
     }
 
     private void setupPanel(){
@@ -30,17 +35,18 @@ public class ControlPanel extends JPanel{
         setupPauseGameButton();
         setupSkipGameButton();
         setupTurnLabel();
+        setupScoreLabels();
     }
 
     private void setupGameTypeChoiceLabel(){
-        gameTypeChoiceLabel = new JLabel("Choose the game type");
+        JLabel gameTypeChoiceLabel = new JLabel("Choose the game type");
         gameTypeChoiceLabel.setPreferredSize(new Dimension(200,30));
         this.add(gameTypeChoiceLabel);
         gameTypeChoiceLabel.setVisible(true);
     }
 
     private void setupHeuristicChoiceLabel(){
-        heuristicChoiceLabel = new JLabel("Choose heuristic");
+        JLabel heuristicChoiceLabel = new JLabel("Choose heuristic");
         heuristicChoiceLabel.setPreferredSize(new Dimension(200,30));
         this.add(heuristicChoiceLabel);
         heuristicChoiceLabel.setVisible(true);
@@ -55,23 +61,40 @@ public class ControlPanel extends JPanel{
     }
 
     private void setupHeuristicChoiceComboBox(){
-        String[] heuristics = {"NegaScout", "Node search"};
+        String[] heuristics = {"None","NegaScout", "Node search"};
         heuristicChoiceComboBox = new JComboBox(heuristics);
         heuristicChoiceComboBox.setPreferredSize(new Dimension(200,30));
+        heuristicChoiceComboBox.setSelectedIndex(0);
         this.add(heuristicChoiceComboBox);
         heuristicChoiceComboBox.setVisible(true);
     }
 
     private void setupStartGameButton(){
-        startGameButton = new JButton("Start game");
+        JButton startGameButton = new JButton("Start game");
         startGameButton.setPreferredSize(new Dimension(200,30));
+        startGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boardUI.getBoardPanel().getController().setSelectedHeuristic(heuristicChoiceComboBox.getSelectedIndex());
+                boardUI.getBoardPanel().getController().setGameStarted(true);
+                scoreLabel.setVisible(true);
+                deadBlackStonesLabel.setVisible(true);
+                deadWhiteStonesLabel.setVisible(true);
+            }
+        });
         this.add(startGameButton);
         startGameButton.setVisible(true);
     }
 
     private void setupPauseGameButton(){
-        pauseGameButton = new JButton("Pause game");
+        JButton pauseGameButton = new JButton("Pause game");
         pauseGameButton.setPreferredSize(new Dimension(200,30));
+        pauseGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boardUI.getBoardPanel().getController().setGameStarted(false);
+            }
+        });
         this.add(pauseGameButton);
         pauseGameButton.setVisible(true);
     }
@@ -90,11 +113,29 @@ public class ControlPanel extends JPanel{
         turnLabel.setVisible(false);
     }
 
+    private void setupScoreLabels(){
+        scoreLabel = new JLabel("Current score: ");
+        scoreLabel.setPreferredSize(new Dimension(200,60));
+        deadBlackStonesLabel = new JLabel("Dead black stones: ");
+        deadBlackStonesLabel.setPreferredSize(new Dimension(200,60));
+        deadWhiteStonesLabel = new JLabel("Dead white stones: ");
+        deadWhiteStonesLabel.setPreferredSize(new Dimension(200,60));
+        this.add(scoreLabel);
+        this.add(deadBlackStonesLabel);
+        this.add(deadWhiteStonesLabel);
+        scoreLabel.setVisible(false);
+        deadBlackStonesLabel.setVisible(false);
+        deadWhiteStonesLabel.setVisible(false);
+    }
+
     JLabel getTurnLabel(){
         return turnLabel;
     }
 
-    JComboBox getHeuristicBox(){
-        return heuristicChoiceComboBox;
+    void setScoreLabels(int blackStones, int whiteStones){
+        deadBlackStonesLabel.setText("Dead black stones: " + blackStones);
+        deadWhiteStonesLabel.setText("Dead white stones: " + whiteStones);
     }
+
+
 }

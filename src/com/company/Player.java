@@ -5,51 +5,11 @@ import java.util.ArrayList;
 /**
  * Created by agnie on 1/12/2017.
  */
-public class Player {
+class Player {
 
-    int size = 19;
-    int maxDepth = 2;
-
+    private int maxDepth = 2;
 
     Player() {
-    }
-
-    private int[] getBest(int player, int depth, GameController controller) {
-        ArrayList<Move> possibleMoves = controller.getGameState().getStones(player, controller);
-        Move bestMove = new Move(-1, -1, 0);
-        int bestScore = (player == 1) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-        int currentScore;
-        int bestRow = -1;
-        int bestCol = -1;
-
-        int deadWhites = controller.getGameState().getDeadWhiteStones();
-        int deadBlacks = controller.getGameState().getDeadBlackStones();
-
-        if ((depth > maxDepth) || possibleMoves.isEmpty()) {
-            bestScore = (findScoreForMove(controller, bestMove, player, deadWhites, deadBlacks));
-        } else {
-            depth++;
-            for (Move possibleMove : possibleMoves) {
-                controller.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = new Stone(player);
-                if (player == 1) {
-                    currentScore = getBest(depth, player - 1, controller)[0];
-                    if (currentScore > bestScore) {
-                        bestScore = currentScore;
-                        bestRow = possibleMove.getX();
-                        bestCol = possibleMove.getY();
-                    }
-                } else {
-                    currentScore = getBest(depth, player, controller)[0];
-                    if (currentScore < bestScore) {
-                        bestScore = currentScore;
-                        bestRow = possibleMove.getX();
-                        bestCol = possibleMove.getY();
-                    }
-                }
-                controller.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = null;
-            }
-        }
-        return new int[]{bestRow, bestCol, bestScore};
     }
 
     private int[] getBestAlphaBeta(int player, int depth, GameController controller, int alpha, int beta) {
@@ -85,7 +45,6 @@ public class Player {
                         bestCol = possibleMove.getY();
                     }
                 }
-                //  controller.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = null;
                 if (alpha >= beta) break;
             }
         }
@@ -133,7 +92,6 @@ public class Player {
                 currentScore = getBestNegascout(depth, player - 1, newControl, beta, alpha)[0];
                 newControl.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = null;
             }
-            //  controller.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = null;
             if (currentScore >= beta) {
                 return new int[]{bestRow, bestCol, currentScore};
             }
@@ -167,13 +125,20 @@ public class Player {
     }
 
     public Move getMove(int player, GameController controller, int heuristic) {
-        //int[] bestMove = (getBest(player, 0, controller));
-        //int[] bestMove = (getBestAlphaBeta(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
         int[] bestMove;
-        if (heuristic == 0) {
-            bestMove = (getBestNegascout(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
-        } else {
-            bestMove = (getBestDepthFirst(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        switch (heuristic){
+            case 0:
+                bestMove = (getBestAlphaBeta(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+                break;
+            case 1:
+                bestMove = (getBestNegascout(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+                break;
+            case 2:
+                bestMove = (getBestDepthFirst(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+                break;
+            default:
+                bestMove = (getBestAlphaBeta(player, 0, controller, Integer.MIN_VALUE, Integer.MAX_VALUE));
+                break;
         }
         Move move = new Move(bestMove[0], bestMove[1], bestMove[2]);
         return move;
@@ -249,7 +214,6 @@ public class Player {
                         bestCol = possibleMove.getY();
                     }
                 }
-                //  controller.getGameState().getBoardState()[possibleMove.getX()][possibleMove.getY()] = null;
                 if (alpha >= beta) break;
             }
         }

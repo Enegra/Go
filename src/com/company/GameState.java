@@ -5,13 +5,14 @@ import java.util.ArrayList;
 /**
  * Created by agnie on 12/18/2016.
  */
-public class GameState {
+class GameState {
 
     private Stone[][] boardState;
     private int deadBlackStones;
     private int deadWhiteStones;
     private int blackStonesInAtari;
     private int whiteStonesInAtari;
+
 
     GameState() {
         boardState = new Stone[19][19];

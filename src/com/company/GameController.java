@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Created by agnie on 12/18/2016.
  */
-public class GameController {
+class GameController {
 
     private int currentPlayer;
     private int opposingPlayer;
@@ -16,11 +16,11 @@ public class GameController {
     private ArrayList<ArrayList<Integer>> capturedCoordinates = new ArrayList<>();
     private Player ai = new Player();
     private int selectedHeuristic = 0;
+    private boolean gameStarted;
 
     GameController() {
         newGame();
         displayBoard();
-
     }
 
     GameController(GameState gameState) {
@@ -69,11 +69,16 @@ public class GameController {
     }
 
     void aiTurn() {
-        Move move = new Move(0, 0, 0);
-        if (boardUI.getControlPanel().getHeuristicBox().getSelectedIndex() == 0) {
-            move = ai.getMove(currentPlayer, this, 0);
-        } else {
-            move = ai.getMove(currentPlayer, this, 1);
+        Move move;
+        switch (selectedHeuristic){
+            case 1:
+                move = ai.getMove(currentPlayer, this, 1);
+                break;
+            case 2:
+                move = ai.getMove(currentPlayer, this, 2);
+                break;
+            default:
+                move = ai.getMove(currentPlayer, this, 0);
         }
         putStone(move.getX(), move.getY());
     }
@@ -111,6 +116,7 @@ public class GameController {
             Stone stone = new Stone(currentPlayer);
             gameState.getBoardState()[i][j] = stone;
             killCaptured(i, j);
+            boardUI.getControlPanel().setScoreLabels(gameState.getDeadBlackStones(), gameState.getDeadWhiteStones());
             switchTurn();
         }
     }
@@ -204,4 +210,17 @@ public class GameController {
         }
         return false;
     }
+
+    void setGameStarted(boolean gameStarted){
+        this.gameStarted = gameStarted;
+    }
+
+    boolean isStarted(){
+        return gameStarted;
+    }
+
+    void setSelectedHeuristic(int selectedHeuristic){
+        this.selectedHeuristic = selectedHeuristic;
+    }
+
 }
