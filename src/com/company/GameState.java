@@ -58,24 +58,24 @@ public class GameState {
         return possibleMoves;
     }
 
-    ArrayList<Move> getStones(int player, GameController controller) {
+    ArrayList<Move> getStones(int player) {
         ArrayList<Move> stoneLocation = new ArrayList<>();
         for (int i = 0; i < getBoardState().length; i++) {
             for (int j = 0; j < getBoardState().length; j++) {
                 if (getBoardState()[i][j] != null && getBoardState()[i][j].getColor() != player) {
-                    if(getBoardState()[i+1][j] == null && (i+1 < getBoardState().length) ){
+                    if((i+1 < getBoardState().length) && getBoardState()[i+1][j] == null){
                         Move move = new Move(i+1, j, 10);
                         stoneLocation.add(move);
                     }
-                    if(getBoardState()[i-1][j] == null && (i-1 >= 0)){
+                    if((i-1 > 0) &&getBoardState()[i-1][j] == null){
                         Move move = new Move(i-1, j, 10);
                         stoneLocation.add(move);
                     }
-                    if(getBoardState()[i][j+1] == null &&(j+1 < getBoardState().length)){
+                    if((j+1 < getBoardState().length) && getBoardState()[i][j+1] == null){
                         Move move = new Move(i, j+1, 10);
                         stoneLocation.add(move);
                     }
-                    if(getBoardState()[i][j-1] == null && (j-1 >= 0)){
+                    if((j-1 > 0) && getBoardState()[i][j-1] == null){
                         Move move = new Move(i, j-1, 10);
                         stoneLocation.add(move);
                     }
