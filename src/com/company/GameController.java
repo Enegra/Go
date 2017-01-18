@@ -52,19 +52,23 @@ class GameController {
     }
 
     void switchTurn() {
-        if (currentPlayer == 0) {
-            currentPlayer = 1;
-            opposingPlayer = 0;
-        } else {
-            currentPlayer = 0;
-            opposingPlayer = 1;
-        }
+        flipTurn();
         boardUI.getBoardPanel().revalidate();
         boardUI.getBoardPanel().repaint();
         boardUI.getControlPanel().getTurnLabel().setText("Current turn: " + currentPlayer);
         gameFlow.add(new GameState(gameState));
         if (currentPlayer == 1) {
             aiTurn();
+        }
+    }
+
+    private void flipTurn(){
+        if (currentPlayer == 0) {
+            currentPlayer = 1;
+            opposingPlayer = 0;
+        } else {
+            currentPlayer = 0;
+            opposingPlayer = 1;
         }
     }
 
@@ -81,6 +85,20 @@ class GameController {
                 move = ai.getMove(currentPlayer, this, 0);
         }
         putStone(move.getX(), move.getY());
+    }
+
+    void aiTurnHandler() {
+        flipTurn();
+        boardUI.getBoardPanel().revalidate();
+        boardUI.getBoardPanel().repaint();
+        boardUI.getControlPanel().getTurnLabel().setText("Current turn: " + currentPlayer);
+        gameFlow.add(new GameState(gameState));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            aiTurn();
+        }
     }
 
     boolean moveAllowed(int i, int j) {
