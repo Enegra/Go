@@ -13,10 +13,12 @@ public class GameController {
     private ArrayList<GameState> gameFlow;
     private GameState gameState;
     private ArrayList<ArrayList<Integer>> capturedCoordinates = new ArrayList<>();
+    Player ai = new Player();
 
     GameController() {
         newGame();
         displayBoard();
+
     }
 
     GameController(GameState gameState){
@@ -51,6 +53,7 @@ public class GameController {
         if (currentPlayer == 0) {
             currentPlayer = 1;
             opposingPlayer = 0;
+            aiTurn();
         } else {
             currentPlayer = 0;
             opposingPlayer = 1;
@@ -59,9 +62,15 @@ public class GameController {
         gameFlow.add(new GameState(gameState));
     }
 
-    boolean moveAllowed(int i, int j) {
+    void aiTurn() {
+        Move move = ai.getMove(currentPlayer, this);
+        putStone(move.getX(), move.getY());
+    }
+
+   public boolean moveAllowed(int i, int j) {
         boolean[][] checked = new boolean[19][19];
         int liberties=4;
+
         if (checkLiberty(checked, i, j - 1, currentPlayer)){
             liberties--;
         }
@@ -147,28 +156,30 @@ public class GameController {
                 checkLiberty(testing, x + 1, y, color);
     }
 
-    private void checkCapturing(int x, int y, int color, boolean[][] checked) {
+    public void checkCapturing(int x, int y, int color, boolean[][] checked) {
         // is there a stone possible to capture?
-        if (gameState.getBoardState()[x][y] != null && gameState.getBoardState()[x][y].getColor() == color) {
-            // if it has zero liberties capture it
-            if (checkLiberty(checked, x, y, color)) {
-                ArrayList<Integer> coordinates = new ArrayList<>();
-                coordinates.add(x);
-                coordinates.add(y);
-                System.out.println("adding " + x + " " + y);
-                capturedCoordinates.add(coordinates);
+        if((x >= 0 && x <= gameState.getBoardState().length) && (y >= 0 && y <= gameState.getBoardState().length)){
+            if (gameState.getBoardState()[x][y] != null && gameState.getBoardState()[x][y].getColor() == color) {
+                // if it has zero liberties capture it
+                if (checkLiberty(checked, x, y, color)) {
+                    ArrayList<Integer> coordinates = new ArrayList<>();
+                    coordinates.add(x);
+                    coordinates.add(y);
+                    System.out.println("adding " + x + " " + y);
+                    capturedCoordinates.add(coordinates);
 
-                if (!containsCoordinates(x+1, y)) {
-                    checkCapturing(x + 1, y, color, checked);
-                }
-                if (!containsCoordinates(x-1, y)) {
-                    checkCapturing(x - 1, y, color, checked);
-                }
-                if (!containsCoordinates(x, y+1)) {
-                    checkCapturing(x, y + 1, color, checked);
-                }
-                if (!containsCoordinates(x, y-1)) {
-                    checkCapturing(x, y - 1, color, checked);
+                    if (!containsCoordinates(x+1, y)) {
+                        checkCapturing(x + 1, y, color, checked);
+                    }
+                    if (!containsCoordinates(x-1, y)) {
+                        checkCapturing(x - 1, y, color, checked);
+                    }
+                    if (!containsCoordinates(x, y+1)) {
+                        checkCapturing(x, y + 1, color, checked);
+                    }
+                    if (!containsCoordinates(x, y-1)) {
+                        checkCapturing(x, y - 1, color, checked);
+                    }
                 }
             }
         }
